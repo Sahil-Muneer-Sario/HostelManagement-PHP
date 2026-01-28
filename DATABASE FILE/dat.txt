@@ -1,0 +1,151 @@
+CREATE TABLE `admin` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(300) NOT NULL,
+  `reg_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updation_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO admin (username, email, password)
+VALUES ('admin', 'admin@fyp.com', MD5('admin123'));
+
+.
+.
+.
+.
+.
+.
+
+CREATE TABLE `courses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `course_code` varchar(255) NOT NULL,
+  `course_name` varchar(255) NOT NULL,
+  `course_teacher` varchar(255) NOT NULL,
+  `posting_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO courses (course_code, course_name, course_teacher)
+VALUES
+('ENG201', 'English Literature', 'Prof. Sara Malik'),
+('MATH301', 'Advanced Calculus', 'Dr. Ahmed Raza'),
+('HIST110', 'World History', 'Dr. Fatima Noor'),
+('CS202', 'Database Systems', 'Sir Bilal Ahmed');
+
+.
+.
+.
+.
+.
+.
+CREATE TABLE `registration` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `roomno` INT(11) NOT NULL,
+  `seater` INT(11) NOT NULL,
+  `feespm` INT(11) NOT NULL,
+  `foodstatus` TINYINT(1) NOT NULL, -- 0 = without food, 1 = with food
+  `stayfrom` DATE NOT NULL,
+  `duration` INT(11) NOT NULL, -- in months
+
+  `course` VARCHAR(255) NOT NULL,
+  `regno` VARCHAR(100) NOT NULL UNIQUE, -- student roll no / registration no
+  `firstName` VARCHAR(100) NOT NULL,
+  `lastName` VARCHAR(100) NOT NULL,
+  `gender` ENUM('Male','Female','Other') NOT NULL,
+  `cnic` VARCHAR(15) NOT NULL, -- Pakistani CNIC e.g., 42101-1234567-8
+  `contactno` VARCHAR(15) NOT NULL, -- Pakistani format e.g., +92XXXXXXXXXX
+  `emailid` VARCHAR(255) NOT NULL,
+
+  `guardianName` VARCHAR(150) NOT NULL,
+  `guardianRelation` VARCHAR(100) NOT NULL,
+  `guardianContactno` VARCHAR(15) NOT NULL,
+
+  `address` VARCHAR(255) NOT NULL, -- full residential address
+  `city` VARCHAR(100) NOT NULL,
+  `province` ENUM('Sindh','Punjab','KPK','Balochistan','Gilgit-Baltistan','Islamabad') NOT NULL,
+  `postalCode` VARCHAR(10) NOT NULL,
+
+  `postingDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updationDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+.
+.
+.
+.
+.
+CREATE TABLE `rooms` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `seater` INT(11) NOT NULL, -- number of seats in the room
+  `room_no` INT(11) NOT NULL UNIQUE, -- unique room number
+  `fees` INT(11) NOT NULL, -- monthly fee for the room
+  `posting_date` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO rooms (seater, room_no, fees)
+VALUES
+(2, 102, 4500),
+(4, 103, 4000),
+(1, 104, 7000),
+(3, 105, 5200),
+(2, 106, 4800);
+
+.
+.
+.
+.
+.
+CREATE TABLE `userlog` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `userId` INT(11) NOT NULL,                 -- reference to users/admin table
+  `userEmail` VARCHAR(255) NOT NULL,
+  `userIp` VARBINARY(16) NOT NULL,           -- stores IPv4/IPv6 in binary
+  `city` VARCHAR(150) NOT NULL,
+  `country` VARCHAR(150) NOT NULL,
+  `loginTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO userlog (userId, userEmail, userIp, city, country)
+VALUES
+(1, 'sahil@example.com', INET6_ATON('39.45.112.101'), 'Karachi', 'Pakistan'),
+(2, 'aleena@example.com', INET6_ATON('111.119.187.210'), 'Lahore', 'Pakistan'),
+(3, 'ahmed.raza@example.com', INET6_ATON('103.255.7.19'), 'Islamabad', 'Pakistan');
+
+.
+.
+.
+.
+CREATE TABLE `userregistration` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `regNo` VARCHAR(50) NOT NULL UNIQUE,          -- student/registration no.
+  `firstName` VARCHAR(100) NOT NULL,
+  `middleName` VARCHAR(100) DEFAULT NULL,
+  `lastName` VARCHAR(100) NOT NULL,
+  `gender` ENUM('Male','Female','Other') NOT NULL,
+  `contactNo` BIGINT(15) NOT NULL,
+  `email` VARCHAR(255) NOT NULL UNIQUE,
+  `password` VARCHAR(255) NOT NULL,             -- store hashed password
+  `regDate` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updationDate` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `passUpdateDate` TIMESTAMP NULL DEFAULT NULL, -- when password changed
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO userregistration 
+(regNo, firstName, middleName, lastName, gender, contactNo, email, password, passUpdateDate) 
+VALUES
+('REG2025-001', 'Sahil', '', 'Muneer', 'Male', 923001112233, 'sahil@example.com', MD5('sahil123'), NOW()),
+('REG2025-002', 'Aleena', '', 'Azam', 'Female', 923451234567, 'aleena@example.com', MD5('aleena123'), NOW()),
+('REG2025-003', 'Ahmed', 'Raza', 'Khan', 'Male', 923321234567, 'ahmed.raza@example.com', MD5('ahmed123'), NOW());
+
+.
+.
+.
+.
+.
+.
